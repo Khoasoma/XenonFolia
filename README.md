@@ -1,150 +1,76 @@
 <div align=center>
-    <img src="./folia.png">
+    <img src="./ChatGPT Image 12_23_47 11 thg 4, 2025.png">
     <br /><br />
-    <p>Fork of <a href="https://github.com/PaperMC/Paper">Paper</a> which adds regionised multithreading to the dedicated server.</p>
-</div>
+    <p>Fork of <a href="https://github.com/PaperMC/Folia/tree/dev/1.21.4?tab=readme-ov-file">Folia-paper</a> Với Tối ưu hệ thống đa luồng theo vùng.
 
 ## Overview
 
-Folia groups nearby loaded chunks to form an "independent region."
-See [the PaperMC documentation](https://docs.papermc.io/folia/reference/region-logic) for exact details on how Folia
-will group nearby chunks.
-Each independent region has its own tick loop, which is ticked at the
-regular Minecraft tickrate (20TPS). The tick loops are executed
-on a thread pool in parallel. There is no main thread anymore, 
-as each region effectively has its own "main thread" that executes
-the entire tick loop.
+Folia nhóm các khối được tải gần đó để tạo thành một "vùng độc lập".
+Xem [tài liệu PaperMC](https://docs.papermc.io/folia/reference/region-logic) để biết thông tin chi tiết chính xác về cách Folia
+sẽ nhóm các khối gần đó.
+Mỗi vùng độc lập có vòng lặp tích tắc riêng, được tích tắc ở
+tốc độ tích tắc Minecraft thông thường (20TPS). Các vòng lặp tích tắc được thực thi
+trên một nhóm luồng song song. Không còn luồng chính nữa,
+vì mỗi vùng thực sự có "luồng chính" riêng thực thi
+toàn bộ vòng lặp tích tắc.
 
-For a server with many spread out players, Folia will create many
-spread out regions and tick them all in parallel on a configurable sized
-threadpool. Thus, Folia should scale well for servers like this.
+Đối với một máy chủ có nhiều người chơi phân tán, Folia sẽ tạo ra nhiều
+vùng phân tán và đánh dấu tất cả chúng song song trên một
+threadpool có kích thước có thể cấu hình. Do đó, Folia sẽ mở rộng tốt cho các máy chủ như thế này.
 
-Folia is also its own project, this will not be merged into Paper
-for the foreseeable future. 
+Đây là Dự án của một người dùng folia không phải Cảm ơn paper
 
-A more detailed but abstract overview: [Project overview](https://docs.papermc.io/folia/reference/overview).
+Tổng quan chi tiết hơn nhưng trừu tượng hơn: [Project overview](https://docs.papermc.io/folia/reference/overview).
 
 ## FAQ
 
-### What server types can benefit from Folia?
-Server types that naturally spread players out, 
-like skyblock or SMP, will benefit the most from Folia. The server
-should have a sizeable player count, too.
+### Thể loại máy chủ nào sẽ lợi khi dùng folia ?
+Các loại máy chủ phân tán người chơi một cách tự nhiên,
+như skyblock hoặc SMP, sẽ được hưởng lợi nhiều nhất từ ​​Folia. Máy chủ
+cũng phải có số lượng người chơi đáng kể.
+### Phần cứng tốt nhất để chạy ?
+Tốt nhất sẽ là 16 _nhân_ (Không phải luồng) hoặc 32 _luồng_
 
-### What hardware will Folia run best on?
-Ideally, at least 16 _cores_ (not threads).
+### Làm sao để cấu hình Folia tốt nhất?
+Đầu tiên, nên load trước thế giới để giảm đáng kể số lượng luồng công việc hệ thống khối cần thiết.
 
-### How to best configure Folia?
-First, it is recommended that the world is pre-generated so that the number
-of chunk system worker threads required is reduced greatly.
+Sau đây là ước tính _rất sơ bộ_ dựa trên thử nghiệm
+được thực hiện trước khi Folia được phát hành trên máy chủ thử nghiệm mà chúng tôi chạy
+có ~330 người chơi đạt đỉnh. Vì vậy, nó không chính xác và sẽ cần điều chỉnh thêm -
+chỉ coi đó là điểm khởi đầu. Cre : paper team
 
-The following is a _very rough_ estimation based off of the testing
-done before Folia was released on the test server we ran that
-had ~330 players peak. So, it is not exact and will require further tuning - 
-just take it as a starting point.
-
-The total number of cores on the machine available should be 
-taken into account. Then, allocate threads for: 
-- netty IO :~4 per 200-300 players
+Tổng số lõi trên máy có sẵn phải được
+tính đến. Sau đó, phân bổ luồng cho:
+- netty IO/thread :~4 per 200-300 players
 - chunk system io threads: ~3 per 200-300 players
-- chunk system workers if pre-generated, ~2 per 200-300 players
-- There is no best guess for chunk system workers if not pre-generated, as
-  on the test server we ran we gave 16 threads but chunk generation was still
-  slow at ~300 players.
-- GC Settings: ???? But, GC settings _do_ allocate concurrent threads, and you need
-  to know exactly how many. This is typically through the `-XX:ConcGCThreads=n` flag. Do not
-  confuse this flag with `-XX:ParallelGCThreads=n`, as parallel GC threads only run when
-  the application is paused by GC and as such should not be taken into account.
+- chunk system workers Nếu world được load trước, ~2 per 200-300 players
+- Không có dự đoán tốt nhất cho các công nhân hệ thống khối nếu không được tạo trước, vì
+trên máy chủ thử nghiệm mà chúng tôi chạy, chúng tôi đã đưa ra 16 luồng nhưng việc tạo khối vẫn
+chậm ở mức ~300 người chơi. Cre : paper team
+- Cấu hình GC: ???? Nhưng, GC cài đặt _do_ phân bổ các luồng đồng thời, và bạn cần
+biết chính xác có bao nhiêu. Điều này thường thông qua cờ `-XX:ConcGCThreads=n`. Đừng
+nhầm lẫn cờ này với `-XX:ParallelGCThreads=n`, vì các luồng GC song song chỉ chạy khi
+ứng dụng bị GC tạm dừng và do đó không nên tính đến.
 
-After all of that allocation, the remaining cores on the system until 80%
-allocation (total threads allocated < 80% of cpus available) can be
-allocated to tickthreads (under global config, threaded-regions.threads). 
-
+Sau khi phân bổ xong, các lõi còn lại trên hệ thống cho đến khi phân bổ 80% (tổng số luồng được phân bổ < 80% CPU khả dụng) có thể được phân bổ cho tickthreads (theo cấu hình toàn cục, threaded-regions.threads).
 The reason you should not allocate more than 80% of the cores is due to the
-fact that plugins or even the server may make use of additional threads 
-that you cannot configure or even predict.
+thực tế là các plugin hoặc thậm chí máy chủ có thể sử dụng các luồng bổ sung
+mà bạn không thể cấu hình hoặc thậm chí dự đoán.
 
-Additionally, the above is all a rough guess based on player count, but
-it is very likely that the thread allocation will not be ideal, and you 
-will need to tune it based on usage of the threads that you end up seeing.
+Ngoài ra, tất cả những điều trên chỉ là phỏng đoán sơ bộ dựa trên số lượng người chơi, nhưng
+rất có thể việc phân bổ luồng sẽ không lý tưởng và bạn
+sẽ cần điều chỉnh dựa trên việc sử dụng các luồng mà cuối cùng bạn thấy.
 
-## Plugin compatibility
+## Plugin Hỗ trợ
 
-There is no more main thread. I expect _every_ single plugin
-that exists to require _some_ level of modification to function
-in Folia. Additionally, multithreading of _any kind_ introduces
-possible race conditions in plugin held data - so, there are bound
-to be changes that need to be made.
+Không còn luồng chính nào nữa. Tôi mong đợi _mọi_ plugin duy nhất
+tồn tại đều yêu cầu _một số_ mức độ sửa đổi để hoạt động
+trong Folia. Ngoài ra, đa luồng _bất kỳ loại nào_ cũng sẽ tạo ra
+các điều kiện chạy đua có thể xảy ra trong dữ liệu được plugin lưu giữ - vì vậy, chắc chắn
+sẽ có những thay đổi cần được thực hiện.
 
-So, have your expectations for compatibility at 0.
+Vì vậy, hãy đặt kỳ vọng của bạn về khả năng tương thích ở mức 0.
 
-## API plans
-
-Currently, there is a lot of API that relies on the main thread. 
-I expect basically zero plugins that are compatible with Paper to 
-be compatible with Folia. However, there are plans to add API that 
-would allow Folia plugins to be compatible with Paper.
-
-For example, the Bukkit Scheduler. The Bukkit Scheduler inherently
-relies on a single main thread. Folia's RegionScheduler and Folia's
-EntityScheduler allow scheduling of tasks to the "next tick" of whatever
-region "owns" either a location or an entity. These could be implemented
-on regular Paper, except they schedule to the main thread - in both cases,
-the execution of the task will occur on the thread that "owns" the
-location or entity. This concept applies in general, as the current Paper
-(single threaded) can be viewed as one giant "region" that encompasses
-all chunks in all worlds. 
-
-It is not yet decided whether to add this API to Paper itself directly
-or to Paperlib.
-
-### The new rules
-
-First, Folia breaks many plugins. To aid users in figuring out which
-plugins work, only plugins that have been explicitly marked by the
-author(s) to work with Folia will be loaded. By placing
-"folia-supported: true" into the plugin's plugin.yml, plugin authors
-can mark their plugin as compatible with regionised multithreading.
-
-The other important rule is that the regions tick in _parallel_, and not 
-_concurrently_. They do not share data, they do not expect to share data,
-and sharing of data _will_ cause data corruption. 
-Code that is running in one region under no circumstance can 
-be accessing or modifying data that is in another region. Just 
-because multithreading is in the name, it doesn't mean that everything 
-is now thread-safe. In fact, there are only a _few_ things that were 
-made thread-safe to make this happen. As time goes on, the number 
-of thread context checks will only grow, even _if_ it comes at a 
-performance penalty - _nobody_ is going to use or develop for a 
-server platform that is buggy as hell, and the only way to 
-prevent and find these bugs is to make bad accesses fail _hard_ at the 
-source of the bad access.
-
-This means that Folia compatible plugins need to take advantage of 
-API like the RegionScheduler and the EntityScheduler to ensure 
-their code is running on the correct thread context.
-
-In general, it is safe to assume that a region owns chunk data
-in an approximate 8 chunks from the source of an event (i.e. player
-breaks block, can probably access 8 chunks around that block). But,
-this is not guaranteed - plugins should take advantage of upcoming
-thread-check API to ensure correct behavior.
-
-The only guarantee of thread-safety comes from the fact that a
-single region owns data in certain chunks - and if that region is
-ticking, then it has full access to that data. This data is 
-specifically entity/chunk/poi data, and is entirely unrelated
-to **ANY** plugin data.
-
-Normal multithreading rules apply to data that plugins store/access
-their own data or another plugin's - events/commands/etc. are called 
-in _parallel_ because regions are ticking in _parallel_ (we CANNOT 
-call them in a synchronous fashion, as this opens up deadlock issues 
-and would handicap performance). There are no easy ways out of this, 
-it depends solely on what data is being accessed. Sometimes a 
-concurrent collection (like ConcurrentHashMap) is enough, and often a 
-concurrent collection used carelessly will only _hide_ threading 
-issues, which then become near impossible to debug.
 
 ### Current API additions
 
