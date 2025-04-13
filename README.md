@@ -1,5 +1,5 @@
 <div align=center>
-    <img src="./ChatGPT Image 12_23_47 11 thg 4, 2025.png">
+    <img src="./lol">
     <br /><br />
     <p>Fork of <a href="https://github.com/PaperMC/Folia/tree/dev/1.21.4?tab=readme-ov-file">Folia-paper</a> Với Tối ưu hệ thống đa luồng theo vùng.
 
@@ -18,9 +18,6 @@ toàn bộ vòng lặp tích tắc.
 vùng phân tán và đánh dấu tất cả chúng song song trên một
 threadpool có kích thước có thể cấu hình. Do đó, Folia sẽ mở rộng tốt cho các máy chủ như thế này.
 
-Đây là Dự án của một người dùng folia không phải Cảm ơn paper
-
-Tổng quan chi tiết hơn nhưng trừu tượng hơn: [Project overview](https://docs.papermc.io/folia/reference/overview).
 
 ## FAQ
 
