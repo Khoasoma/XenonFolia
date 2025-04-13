@@ -1,4 +1,4 @@
-<div align=center>
+<div>
     <img src="./lol.png">
     <br /><br />
     <p>Fork of <a href="https://github.com/PaperMC/Folia/tree/dev/1.21.4?tab=readme-ov-file">Folia-paper</a> Với Tối ưu hệ thống đa luồng theo vùng.
