@@ -5,9 +5,9 @@
 
 ## Features
 
- - Optimize chunks loader
- - Configrable Anti Xray
- - Becoming able to support bukkit plugins
+ - Tối ưu hệ thống tạo chunks
+ - Tối ưu / làm lại hệ thống xray 
+ - Sẽ hỗ trợ plugin bukkit trong tương lai
 
 ## Download
 Tất cả phiên bản Đều ở đây  [release](https://github.com/Khoasoma/XenonFolia/releases), Hoặc tự build theo hướng dẫn dưới đây [the following steps](./README_EN.md#Build).
