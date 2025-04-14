@@ -10,7 +10,7 @@
  - Sẽ hỗ trợ plugin bukkit trong tương lai
 
 ## Download
-Tất cả phiên bản Đều ở đây  [release](https://github.com/Khoasoma/XenonFolia/releases), Hoặc tự build theo hướng dẫn dưới đây [the following steps](./README_EN.md#Build).
+Tất cả phiên bản Đều ở đây  [release](https://github.com/Khoasoma/XenonFolia/releases), Hoặc tự build theo hướng dẫn dưới đây [the following steps](./README.md#Build).
 
 ## Build
 Để Build được paperclip jar dùng cmd dưới đây. Build xong sẽ tìm thấy jar ở build/libs (Note: Cần jdk21)
